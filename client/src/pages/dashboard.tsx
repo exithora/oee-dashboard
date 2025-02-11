@@ -8,6 +8,7 @@ import OeeChart from "@/components/charts/oee-chart";
 import MetricCard from "@/components/metrics/metric-card";
 import HelpDialog from "@/components/help/help-dialog";
 import CsvUpload from "@/components/data/csv-upload";
+import SampleDataDialog from "@/components/data/sample-data-dialog";
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = useState<TimeRange>({
@@ -38,10 +39,11 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-4">
           <CsvUpload />
+          <SampleDataDialog />
           <HelpDialog />
           <Select
             value={timeRange.frequency}
-            onValueChange={(value) => 
+            onValueChange={(value) =>
               setTimeRange(prev => ({ ...prev, frequency: value as TimeRange["frequency"] }))
             }
           >
