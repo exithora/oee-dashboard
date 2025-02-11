@@ -17,8 +17,15 @@ export class MemStorage implements IStorage {
 
   async insertOeeRecord(record: InsertOeeRecord): Promise<OeeRecord> {
     const id = this.currentId++;
-    const startOfOrder = new Date();
-    const oeeRecord: OeeRecord = { ...record, id, startOfOrder };
+    const oeeRecord: OeeRecord = { 
+      id, 
+      startOfOrder: new Date(record.startOfOrder),
+      plannedProductionTime: record.plannedProductionTime,
+      actualProductionTime: record.actualProductionTime,
+      idealCycleTime: record.idealCycleTime,
+      totalPieces: record.totalPieces,
+      goodPieces: record.goodPieces
+    };
     this.records.set(id, oeeRecord);
     return oeeRecord;
   }
@@ -26,18 +33,20 @@ export class MemStorage implements IStorage {
   async getOeeRecords(timeRange: TimeRange): Promise<OeeRecord[]> {
     const start = new Date(timeRange.start);
     const end = new Date(timeRange.end);
-    
-    return Array.from(this.records.values()).filter(record => 
-      record.startOfOrder >= start && record.startOfOrder <= end
-    ).sort((a, b) => a.startOfOrder.getTime() - b.startOfOrder.getTime());
+
+    return Array.from(this.records.values())
+      .filter(record => 
+        record.startOfOrder >= start && record.startOfOrder <= end
+      )
+      .sort((a, b) => a.startOfOrder.getTime() - b.startOfOrder.getTime());
   }
 
   async getLatestOeeRecord(): Promise<OeeRecord | undefined> {
     const records = Array.from(this.records.values());
     if (records.length === 0) return undefined;
-    
+
     return records.reduce((latest, current) => 
-      current.timestamp > latest.timestamp ? current : latest
+      current.startOfOrder.getTime() > latest.startOfOrder.getTime() ? current : latest
     );
   }
 }

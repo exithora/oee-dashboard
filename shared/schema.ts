@@ -13,8 +13,7 @@ export const oeeRecords = pgTable("oee_records", {
 });
 
 export const insertOeeRecordSchema = createInsertSchema(oeeRecords).omit({
-  id: true,
-  timestamp: true,
+  id: true
 });
 
 export const timeRangeSchema = z.object({
