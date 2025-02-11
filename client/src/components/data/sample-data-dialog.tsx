@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wand2 } from "lucide-react";
+import { Wand2, Download } from "lucide-react";
 import { useState } from "react";
 import { generateSampleData } from "@/lib/sample-data";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -16,17 +16,31 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function SampleDataDialog() {
   const [isOpen, setIsOpen] = useState(false);
-  const [numRecords, setNumRecords] = useState("10");
+  const [numRecords, setNumRecords] = useState("100");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
+  const downloadCsv = (records: ReturnType<typeof generateSampleData>) => {
+    const headers = "timestamp,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces\n";
+    const rows = records.map(record => 
+      `${record.timestamp},${record.plannedProductionTime},${record.actualProductionTime},${record.idealCycleTime},${record.totalPieces},${record.goodPieces}`
+    ).join('\n');
+
+    const csvContent = headers + rows;
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = "sample_oee_data.csv";
+    link.click();
+  };
+
   const handleGenerate = async () => {
     const count = parseInt(numRecords);
-    if (isNaN(count) || count < 1 || count > 100) {
+    if (isNaN(count) || count < 1 || count > 5000) {
       toast({
         variant: "destructive",
         title: "Invalid input",
-        description: "Please enter a number between 1 and 100",
+        description: "Please enter a number between 1 and 5000",
       });
       return;
     }
@@ -34,7 +48,10 @@ export default function SampleDataDialog() {
     setIsGenerating(true);
     try {
       const records = generateSampleData(count);
-      
+
+      // Download CSV
+      downloadCsv(records);
+
       // Upload records sequentially
       for (const record of records) {
         await apiRequest('POST', '/api/oee-records', record);
@@ -46,7 +63,7 @@ export default function SampleDataDialog() {
 
       toast({
         title: "Success",
-        description: `Generated ${count} sample records successfully.`,
+        description: `Generated ${count} sample records successfully and downloaded as CSV.`,
       });
       setIsOpen(false);
     } catch (error) {
@@ -73,12 +90,12 @@ export default function SampleDataDialog() {
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="numRecords">Number of Records (1-100)</Label>
+            <Label htmlFor="numRecords">Number of Records (1-5000)</Label>
             <Input
               id="numRecords"
               type="number"
               min="1"
-              max="100"
+              max="5000"
               value={numRecords}
               onChange={(e) => setNumRecords(e.target.value)}
             />
@@ -88,7 +105,12 @@ export default function SampleDataDialog() {
             disabled={isGenerating}
             className="w-full"
           >
-            {isGenerating ? "Generating..." : "Generate Sample Data"}
+            {isGenerating ? "Generating..." : (
+              <>
+                Generate & Download
+                <Download className="ml-2 h-4 w-4" />
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>
