@@ -70,10 +70,12 @@ export default function SampleDataDialog() {
         description: `Generated ${count} sample records successfully and downloaded as CSV.`,
       });
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to generate sample data";
+      console.error("Sample data generation error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to generate sample data.",
+        description: message,
       });
     } finally {
       setIsGenerating(false);
