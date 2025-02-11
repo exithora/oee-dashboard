@@ -17,8 +17,8 @@ export class MemStorage implements IStorage {
 
   async insertOeeRecord(record: InsertOeeRecord): Promise<OeeRecord> {
     const id = this.currentId++;
-    const timestamp = new Date();
-    const oeeRecord: OeeRecord = { ...record, id, timestamp };
+    const startOfOrder = new Date();
+    const oeeRecord: OeeRecord = { ...record, id, startOfOrder };
     this.records.set(id, oeeRecord);
     return oeeRecord;
   }
@@ -28,8 +28,8 @@ export class MemStorage implements IStorage {
     const end = new Date(timeRange.end);
     
     return Array.from(this.records.values()).filter(record => 
-      record.timestamp >= start && record.timestamp <= end
-    ).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      record.startOfOrder >= start && record.startOfOrder <= end
+    ).sort((a, b) => a.startOfOrder.getTime() - b.startOfOrder.getTime());
   }
 
   async getLatestOeeRecord(): Promise<OeeRecord | undefined> {

@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export const oeeRecords = pgTable("oee_records", {
   id: serial("id").primaryKey(),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  startOfOrder: timestamp("start_of_order").notNull().defaultNow(),
   plannedProductionTime: integer("planned_production_time").notNull(),
   actualProductionTime: integer("actual_production_time").notNull(),
   idealCycleTime: real("ideal_cycle_time").notNull(),
