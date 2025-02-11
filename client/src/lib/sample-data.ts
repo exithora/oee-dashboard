@@ -13,7 +13,7 @@ export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
 
   for (let i = 0; i < numberOfRecords; i++) {
     // Generate timestamp between startDate and now
-    const startOfOrder = new Date(
+    const timestamp = new Date(
       startDate.getTime() + Math.random() * (now.getTime() - startDate.getTime())
     );
 
@@ -25,7 +25,7 @@ export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
     const goodPieces = Math.floor(totalPieces * (randomInRange(85, 98) / 100)); // 85-98% quality rate
 
     records.push({
-      startOfOrder,
+      timestamp,
       plannedProductionTime,
       actualProductionTime,
       idealCycleTime,
