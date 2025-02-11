@@ -10,7 +10,7 @@ import { HelpCircle } from "lucide-react";
 
 export default function HelpDialog() {
   const handleDownloadTemplate = () => {
-    const headers = "timestamp,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces\n";
+    const headers = "startOfOrder,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces\n";
     const example = "2024-02-11T10:00:00,480,420,0.5,800,750\n";
     const csvContent = headers + example;
 
@@ -39,7 +39,7 @@ export default function HelpDialog() {
               Upload your data using a CSV file with the following columns:
             </p>
             <ul className="list-disc list-inside text-sm space-y-1">
-              <li><strong>timestamp</strong>: Date and time of the record (format: YYYY-MM-DDTHH:mm:ss)</li>
+              <li><strong>startOfOrder</strong>: Date and time of the record (format: YYYY-MM-DDTHH:mm:ss)</li>
               <li><strong>plannedProductionTime</strong>: Total planned production time (in minutes)</li>
               <li><strong>actualProductionTime</strong>: Actual production time (in minutes)</li>
               <li><strong>idealCycleTime</strong>: Ideal cycle time per piece (in minutes)</li>

@@ -7,13 +7,13 @@ function randomInRange(min: number, max: number): number {
 export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
   const records: InsertOeeRecord[] = [];
   const now = new Date();
-  
+
   // Start from 30 days ago
   const startDate = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-  
+
   for (let i = 0; i < numberOfRecords; i++) {
     // Generate timestamp between startDate and now
-    const timestamp = new Date(
+    const startOfOrder = new Date(
       startDate.getTime() + Math.random() * (now.getTime() - startDate.getTime())
     );
 
@@ -25,7 +25,7 @@ export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
     const goodPieces = Math.floor(totalPieces * (randomInRange(85, 98) / 100)); // 85-98% quality rate
 
     records.push({
-      timestamp: timestamp.toISOString(),
+      startOfOrder,
       plannedProductionTime,
       actualProductionTime,
       idealCycleTime,
@@ -36,6 +36,6 @@ export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
 
   // Sort by timestamp
   return records.sort((a, b) => 
-    new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    a.startOfOrder.getTime() - b.startOfOrder.getTime()
   );
 }

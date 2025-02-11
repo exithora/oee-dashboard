@@ -7,7 +7,7 @@ interface OeeChartProps {
 
 export default function OeeChart({ data }: OeeChartProps) {
   const chartData = data.map(record => ({
-    timestamp: new Date(record.timestamp).toLocaleDateString(),
+    date: new Date(record.startOfOrder).toLocaleDateString(),
     availability: calculateAvailability(record.plannedProductionTime, record.actualProductionTime),
     performance: calculatePerformance(record.actualProductionTime, record.idealCycleTime, record.totalPieces),
     quality: calculateQuality(record.totalPieces, record.goodPieces),
@@ -22,7 +22,7 @@ export default function OeeChart({ data }: OeeChartProps) {
     <ResponsiveContainer width="100%" height={400}>
       <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="timestamp" />
+        <XAxis dataKey="date" />
         <YAxis />
         <Tooltip />
         <Legend />

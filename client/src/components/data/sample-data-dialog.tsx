@@ -21,9 +21,9 @@ export default function SampleDataDialog() {
   const { toast } = useToast();
 
   const downloadCsv = (records: ReturnType<typeof generateSampleData>) => {
-    const headers = "timestamp,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces\n";
+    const headers = "startOfOrder,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces\n";
     const rows = records.map(record => 
-      `${record.timestamp},${record.plannedProductionTime},${record.actualProductionTime},${record.idealCycleTime},${record.totalPieces},${record.goodPieces}`
+      `${record.startOfOrder.toISOString()},${record.plannedProductionTime},${record.actualProductionTime},${record.idealCycleTime},${record.totalPieces},${record.goodPieces}`
     ).join('\n');
 
     const csvContent = headers + rows;
@@ -46,11 +46,15 @@ export default function SampleDataDialog() {
     }
 
     setIsGenerating(true);
+    setIsOpen(false); // Close dialog immediately
+
     try {
       const records = generateSampleData(count);
-
-      // Download CSV
       downloadCsv(records);
+
+      toast({
+        description: "Generating and uploading sample data...",
+      });
 
       // Upload records sequentially
       for (const record of records) {
@@ -65,7 +69,6 @@ export default function SampleDataDialog() {
         title: "Success",
         description: `Generated ${count} sample records successfully and downloaded as CSV.`,
       });
-      setIsOpen(false);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -80,7 +83,12 @@ export default function SampleDataDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="h-8 w-8">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          className="h-8 w-8" 
+          disabled={isGenerating}
+        >
           <Wand2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>
