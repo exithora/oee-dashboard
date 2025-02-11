@@ -26,6 +26,8 @@ export function generateSampleData(numberOfRecords: number): InsertOeeRecord[] {
 
     records.push({
       startOfOrder: timestamp,
+      productNumber: `PRD-${randomInRange(1000, 9999)}`,
+      productionLine: `LINE-${randomInRange(1, 5)}`,
       plannedProductionTime,
       actualProductionTime,
       idealCycleTime,

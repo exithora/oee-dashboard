@@ -5,6 +5,8 @@ import { z } from "zod";
 export const oeeRecords = pgTable("oee_records", {
   id: serial("id").primaryKey(),
   startOfOrder: timestamp("start_of_order").notNull().defaultNow(),
+  productNumber: text("product_number").notNull(),
+  productionLine: text("production_line").notNull(),
   plannedProductionTime: integer("planned_production_time").notNull(),
   actualProductionTime: integer("actual_production_time").notNull(),
   idealCycleTime: real("ideal_cycle_time").notNull(),
