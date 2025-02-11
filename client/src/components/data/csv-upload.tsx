@@ -11,15 +11,16 @@ export default function CsvUpload() {
   const { toast } = useToast();
 
   const validateAndParseRecord = (values: string[]): InsertOeeRecord | null => {
-    if (values.length !== 5) return null;
+    if (values.length !== 6) return null; // Updated to include timestamp
 
     try {
       const record = {
-        plannedProductionTime: parseInt(values[0]),
-        actualProductionTime: parseInt(values[1]),
-        idealCycleTime: parseFloat(values[2]),
-        totalPieces: parseInt(values[3]),
-        goodPieces: parseInt(values[4])
+        timestamp: new Date(values[0]).toISOString(), // Parse the timestamp
+        plannedProductionTime: parseInt(values[1]),
+        actualProductionTime: parseInt(values[2]),
+        idealCycleTime: parseFloat(values[3]),
+        totalPieces: parseInt(values[4]),
+        goodPieces: parseInt(values[5])
       };
 
       // Use the schema to validate the record
@@ -51,7 +52,7 @@ export default function CsvUpload() {
         const lines = text.split('\n');
 
         // Verify header row
-        const expectedHeaders = "plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces";
+        const expectedHeaders = "timestamp,plannedProductionTime,actualProductionTime,idealCycleTime,totalPieces,goodPieces";
         const headers = lines[0].trim().toLowerCase();
 
         if (headers !== expectedHeaders.toLowerCase()) {
@@ -68,7 +69,7 @@ export default function CsvUpload() {
           const record = validateAndParseRecord(values);
 
           if (!record) {
-            throw new Error("Invalid data format in CSV. Please check the values.");
+            throw new Error("Invalid data format in CSV. Please check the values and ensure correct timestamp format (YYYY-MM-DDTHH:mm:ss).");
           }
 
           records.push(record);
